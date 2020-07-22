@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         移除Bangumi译名
-// @namespace    http://tampermonkey.net/
+// @namespace    https://github.com/2Jelly2/Remove-Translated-Names-on-Bangumi
 // @version      0.01
 // @description  Remove Translated Names on Bangumi
 // @author       時計坂しぐれ
