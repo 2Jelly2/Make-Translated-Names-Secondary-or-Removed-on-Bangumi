@@ -4,11 +4,16 @@
 
 listPageModify
 
-	= true  : 交换收藏页面的译名与原名位置 *默认*
-	= false : 删除译名
+	= true  : 交换[收藏]页面的译名与原名位置 *默认*
+	= false : 删除[收藏]页面的译名
+
+personPageModify
+
+	= true  : 交换[人物参与作品页面]中译名与原名的位置 *默认*
+	= false : 删除[人物页面]以及[人物参与作品页面]中的译名
 
 
 subjectPageModify
 
-	= true  : 删除条目页面中的译名
-	= false : 保留条目页面中的译名 *默认*
+	= true  : 删除[条目]页面中的译名
+	= false : 对于[条目]页面中的译名不做改动 *默认*
