@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         移除Bangumi译名
-// @namespace    https://github.com/2Jelly2/Remove-Translated-Names-on-Bangumi
+// @name         Bangumi 译名次要化或删除
+// @namespace    https://github.com/2Jelly2/Make-Translated-Names-Secondary-or-Removed-on-Bangumi
 // @version      0.03
-// @description  Remove Translated Names on Bangumi
+// @description  Make Translated Names Secondary or Removed on Bangumi.
 // @author       時計坂しぐれ
 // @match        https://chii.in/*/list/*
 // @match        https://bgm.tv/*/list/*
