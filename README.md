@@ -1,6 +1,6 @@
 # [時計坂しぐれ☘️](https://chii.in/user/jellyinside)
 
-## [Bangumi 译名次要化或删除](https://github.com/2Jelly2/Make-Translated-Names-Secondary-or-Removed-on-Bangumi/raw/master/Make-Translated-Names-Secondary-or-Removed-on-Bangumi.user.js)
+## [Bangumi 译名次要化或删除](https://github.com/2Jelly2/Make-Translated-Names-Secondary-or-Removed-on-Bangumi/blob/master/Make-Translated-Names-Secondary-or-Removed-on-Bangumi.user.js)
 
 listPageModify
 
