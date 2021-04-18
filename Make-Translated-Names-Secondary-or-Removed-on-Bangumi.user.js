@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bangumi 译名次要化或删除
 // @namespace    https://github.com/2Jelly2/Make-Translated-Names-Secondary-or-Removed-on-Bangumi
-// @version      0.04
+// @version      0.05
 // @description  Make Translated Names Secondary or Removed on Bangumi.
 // @author       時計坂しぐれ
 // @grant        none
@@ -117,7 +117,7 @@
 
         function modifyPersonPage()
         {
-            if(url.endsWith("works"))
+            if(url.split("?", 1)[0].endsWith("works"))
             {
                 var subjects = document.getElementsByTagName("h3");
 
