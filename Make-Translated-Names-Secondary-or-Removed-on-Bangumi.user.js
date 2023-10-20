@@ -1,10 +1,14 @@
 // ==UserScript==
 // @name         Bangumi 译名次要化或删除
 // @namespace    https://github.com/2Jelly2/Make-Translated-Names-Secondary-or-Removed-on-Bangumi
-// @version      0.05
+// @version      0.06
 // @description  Make Translated Names Secondary or Removed on Bangumi.
 // @author       時計坂しぐれ
 // @grant        none
+
+// @match        https://chii.in
+// @match        https://bgm.tv
+// @match        https://bangumi.tv
 
 // @match        https://chii.in/*/list/*
 // @match        https://bgm.tv/*/list/*
@@ -36,43 +40,67 @@
         var listPageModify = true; // List pages
         var searchPageModify = true; // Search pages
         var personPageModify = true; // Person pages
+        var homePageModify = true; // Home pages
 
         // Translated names on Subject Pages are remained by default,
         // with *true* to enable modification.
         var subjectPageModify = false;
 
-
-        if (url.match(/(chii.in|bgm.tv|bangumi.tv)\/subject\//) == null)
+        if (url.match(/(chii.in|bgm.tv|bangumi.tv)\/$/) == null)
         {
-            if (url.match(/(chii.in|bgm.tv|bangumi.tv)\/person\//) != null)
-            // Modify on Person Pages
+            if (url.match(/(chii.in|bgm.tv|bangumi.tv)\/subject\//) == null)
             {
-                modifyPersonPage();
+                if (url.match(/(chii.in|bgm.tv|bangumi.tv)\/person\//) != null)
+                // Modify on Person Pages
+                {
+                    modifyPersonPage();
+                }
+                else
+                {
+                    if (url.match(/(chii.in|bgm.tv|bangumi.tv)\/subject_search\//) != null)
+                    // Modify on Search Pages
+                    {
+                        modifyListPage('Search');
+                    }
+                    else
+                    // Modify on List Pages
+                    {
+                        listPageModify = searchPageModify;
+                        modifyListPage('List');
+                    }
+                }
             }
             else
             {
-                if (url.match(/(chii.in|bgm.tv|bangumi.tv)\/subject_search\//) != null)
-                // Modify on Search Pages
+                if (subjectPageModify == true)
+                // Modify on Subject Pages
                 {
-                    modifyListPage('Search');
-                }
-                else
-                // Modify on List Pages
-                {
-                    listPageModify = searchPageModify;
-                    modifyListPage('List');
+                    modifySubjectPage();
                 }
             }
         }
         else
         {
-            if (subjectPageModify == true)
-            // Modify on Subject Pages
+            if (homePageModify == true)
             {
-                modifySubjectPage();
+                modifyHomePage()
+                setInterval(modifyHomePage, 1000);
             }
         }
 
+        function modifyHomePage(type)
+        {
+            var cards = document.getElementsByClassName("card");
+
+            for (var i = 0; i < cards.length; i++)
+            {
+                var original_name = document.getElementsByClassName("card")[i].parentElement.getElementsByTagName("a")[1].getAttribute("data-subject-name")
+                if (original_name != null)
+                {
+                    document.getElementsByClassName("card")[i].getElementsByClassName("title")[0].innerText = original_name
+                }
+            }
+        }
 
         function modifyListPage(type)
         {
