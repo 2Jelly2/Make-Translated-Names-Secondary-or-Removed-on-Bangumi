@@ -83,8 +83,11 @@
         {
             if (homePageModify == true)
             {
-                modifyHomePage()
-                setInterval(modifyHomePage, 1000);
+                modifyHomePage();
+                const observer = new MutationObserver(function (mutations){
+                    modifyHomePage();
+                });
+                observer.observe(document.body, { childList: true, subtree: true });
             }
         }
 
@@ -94,14 +97,19 @@
 
             for (var i = 0; i < cards.length; i++)
             {
-                var info = document.getElementsByClassName("card")[i].parentElement.getElementsByTagName("a")[1]
-                if (info.getAttribute("data-subject-name") != null)
+                var card = document.getElementsByClassName("card")[i]
+                var info = card.parentElement.getElementsByTagName("a")[1]
+                if (card.getAttribute("ignore") == null)
                 {
-                    document.getElementsByClassName("card")[i].getElementsByClassName("title")[0].innerText = info.getAttribute("data-subject-name")
-                }
-                else
-                {
-                    document.getElementsByClassName("card")[i].getElementsByClassName("title")[0].innerText = info.innerText
+                    if (info.getAttribute("data-subject-name") != null)
+                    {
+                        document.getElementsByClassName("card")[i].getElementsByClassName("title")[0].innerText = info.getAttribute("data-subject-name")
+                    }
+                    else
+                    {
+                        document.getElementsByClassName("card")[i].getElementsByClassName("title")[0].innerText = info.innerText
+                    }
+                    document.getElementsByClassName("card")[i].setAttribute("ignore", true)
                 }
             }
         }
