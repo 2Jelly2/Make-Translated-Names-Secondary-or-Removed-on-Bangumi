@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bangumi 译名次要化或删除
 // @namespace    https://github.com/2Jelly2/Make-Translated-Names-Secondary-or-Removed-on-Bangumi
-// @version      0.08
+// @version      0.09
 // @description  Make Translated Names Secondary or Removed on Bangumi.
 // @author       時計坂しぐれ
 // @grant        none
@@ -97,8 +97,9 @@
 
             for (var i = 0; i < cards.length; i++)
             {
-                var card = document.getElementsByClassName("card")[i]
+                var card = cards[i]
                 var info = card.parentElement.getElementsByTagName("a")[1]
+                card.classList
                 if (card.getAttribute("ignore") == null)
                 {
                     if (info.getAttribute("data-subject-name") != null)
@@ -107,7 +108,14 @@
                     }
                     else
                     {
-                        document.getElementsByClassName("card")[i].getElementsByClassName("title")[0].innerText = info.innerText
+                        if (card.classList.contains("card_tiny"))
+                        {
+                            document.getElementsByClassName("card")[i].getElementsByClassName("title")[0].innerText = card.getElementsByClassName("subtitle")[0].innerText
+                        }
+                        else
+                        {
+                            document.getElementsByClassName("card")[i].getElementsByClassName("title")[0].innerText = info.innerText
+                        }
                     }
                     document.getElementsByClassName("card")[i].setAttribute("ignore", true)
                 }
