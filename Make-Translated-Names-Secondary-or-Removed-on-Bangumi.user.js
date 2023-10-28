@@ -1,231 +1,143 @@
 // ==UserScript==
 // @name         Bangumi 译名次要化或删除
 // @namespace    https://github.com/2Jelly2/Make-Translated-Names-Secondary-or-Removed-on-Bangumi
-// @version      0.09
+// @version      0.10
 // @description  Make Translated Names Secondary or Removed on Bangumi.
 // @author       時計坂しぐれ
-// @grant        none
+// @grant        GM_setValue
+// @grant        GM_getValue
+// @grant        GM_listValues
+// @grant        GM_registerMenuCommand
 
-// @match        https://chii.in
-// @match        https://bgm.tv
-// @match        https://bangumi.tv
-
-// @match        https://chii.in/*/list/*
-// @match        https://bgm.tv/*/list/*
-// @match        https://bangumi.tv/*/list/*
-
-// @match        https://chii.in/person/*
-// @match        https://bgm.tv/person/*
-// @match        https://bangumi.tv/person/*
-
-// @match        https://chii.in/subject/*
-// @match        https://bgm.tv/subject/*
-// @match        https://bangumi.tv/subject/*
-
-// @match        https://chii.in/subject_search/*
-// @match        https://bgm.tv/subject_search/*
-// @match        https://bangumi.tv/subject_search/*
+// @match        https://chii.in/*
+// @match        https://bgm.tv/*
+// @match        https://bangumi.tv/*
 
 // ==/UserScript==
-
 (
     function()
     {
         'use strict';
 
-        var url = window.location.href;
+        const url = window.location.href;
+        const keys = GM_listValues();
 
-        // Exchange original names and translated ones on specific types of pages,
-        // with *false* to remove translated names without exchange.
-        var listPageModify = true; // List pages
-        var searchPageModify = true; // Search pages
-        var personPageModify = true; // Person pages
-        var homePageModify = true; // Home pages
-
-        // Translated names on Subject Pages are remained by default,
-        // with *true* to enable modification.
-        var subjectPageModify = false;
-
-        if (url.match(/(chii.in|bgm.tv|bangumi.tv)\/$/) == null)
+        if (!keys.includes("extinctionMode"))
         {
-            if (url.match(/(chii.in|bgm.tv|bangumi.tv)\/subject\//) == null)
-            {
-                if (url.match(/(chii.in|bgm.tv|bangumi.tv)\/person\//) != null)
-                // Modify on Person Pages
+            GM_setValue("extinctionMode", false);
+        }
+
+        // Exchange original title names and translated ones,
+        // with *false* to enable Exchange Mode. (default)
+        // Remove translated title names completely, instead of exchange them with original ones,
+        // with *true* to enable Distinction Mode;
+        const extinctionMode = GM_getValue("extinctionMode");
+
+        const mode_switcher = GM_registerMenuCommand("Extinction Mode" + extinctionMode, function(event) {
+                GM_setValue("extinctionMode", !extinctionMode);
+        });
+
+        if (url.match(/(chii.in|bgm.tv|bangumi.tv)\/$/) != null)
+        {
+            modifyCards();
+            const observer = new MutationObserver
+            (
+                function (mutations)
                 {
-                    modifyPersonPage();
+                    modifyCards();
                 }
-                else
-                {
-                    if (url.match(/(chii.in|bgm.tv|bangumi.tv)\/subject_search\//) != null)
-                    // Modify on Search Pages
-                    {
-                        modifyListPage('Search');
-                    }
-                    else
-                    // Modify on List Pages
-                    {
-                        listPageModify = searchPageModify;
-                        modifyListPage('List');
-                    }
-                }
-            }
-            else
-            {
-                if (subjectPageModify == true)
-                // Modify on Subject Pages
-                {
-                    modifySubjectPage();
-                }
-            }
+            );
+            observer.observe(document.body, { childList: true, subtree: true });
+        }
+        else if (url.match(/(chii.in|bgm.tv|bangumi.tv)\/subject\//) != null)
+        {
+            modifySubjects();
         }
         else
         {
-            if (homePageModify == true)
-            {
-                modifyHomePage();
-                const observer = new MutationObserver(function (mutations){
-                    modifyHomePage();
-                });
-                observer.observe(document.body, { childList: true, subtree: true });
-            }
+            modifyItems();
         }
 
-        function modifyHomePage(type)
+
+        function modifyCards()
         {
             var cards = document.getElementsByClassName("card");
 
             for (var i = 0; i < cards.length; i++)
             {
-                var card = cards[i]
-                var info = card.parentElement.getElementsByTagName("a")[1]
-                card.classList
+                var card = cards[i];
+                var info = card.parentElement.getElementsByTagName("a")[1];
+
                 if (card.getAttribute("ignore") == null)
                 {
+                    var title = document.getElementsByClassName("card")[i].getElementsByClassName("title")[0].getElementsByTagName("a")[0];
+
                     if (info.getAttribute("data-subject-name") != null)
                     {
-                        document.getElementsByClassName("card")[i].getElementsByClassName("title")[0].innerText = info.getAttribute("data-subject-name")
+                        title.innerText = info.getAttribute("data-subject-name");
                     }
                     else
                     {
                         if (card.classList.contains("card_tiny"))
                         {
-                            document.getElementsByClassName("card")[i].getElementsByClassName("title")[0].innerText = card.getElementsByClassName("subtitle")[0].innerText
+                            title.innerText = card.getElementsByClassName("subtitle")[0].innerText;
                         }
                         else
                         {
-                            document.getElementsByClassName("card")[i].getElementsByClassName("title")[0].innerText = info.innerText
+                            title.innerText = info.innerText;
                         }
                     }
-                    document.getElementsByClassName("card")[i].setAttribute("ignore", true)
+                    card.setAttribute("ignore", true);
                 }
             }
         }
 
-        function modifyListPage(type)
+        function modifyItems()
         {
-            var subjects = document.getElementsByTagName("h3");
+            var subjects = document.getElementsByClassName("item")
 
             for (var i = 0; i < subjects.length; i++)
             {
-                var fullTag = subjects[i].innerHTML;
+                var subject = subjects[i].getElementsByTagName("h3")[0];
 
-                if (fullTag.match(/<small(([\s\S])*?)small>/g) != null)
+                var subtitle_element = subject.getElementsByTagName("small")[0]
+                if (subtitle_element != null)
                 {
-                    var translatedTag = fullTag.replace(/<small(([\s\S])*?)small>/g, '');
-                    var originalTag = fullTag.replace(/<a(([\s\S])*?)a>/g, '');
-
-                    var originalRaw, translatedRaw;
-                    if (type == 'List')
+                    var title_element = subject.getElementsByTagName("a")[0]
+                    var translated_name = title_element.innerText;
+                    title_element.innerText = subtitle_element.innerText;
+                    if (!extinctionMode)
                     {
-                        originalRaw = originalTag.match(/(?<=>)[^<>]+(?=<)/g);
-                        translatedRaw = translatedTag.match(/(?<=>)[^<>]+(?=<)/g);
+                        subtitle_element.innerText = translated_name;
                     }
                     else
                     {
-                        originalRaw = originalTag.match(/(?<=>)[^<>]+(?=<)/g)[1];
-                        translatedRaw = translatedTag.match(/(?<=>)[^<>]+(?=<)/g)[1];
+                        subtitle_element.parentElement.removeChild(subtitle_element);
                     }
-
-                    if (listPageModify)
-                    {
-                        fullTag = fullTag.replace(originalRaw, 'TBD');
-                        fullTag = fullTag.replace(translatedRaw, originalRaw);
-                        fullTag = fullTag.replace('TBD', translatedRaw);
-                    }
-                    else
-                    {
-                        fullTag = translatedTag.replace(translatedRaw, originalRaw);
-                    }
-                    document.getElementsByTagName("h3")[i].innerHTML = fullTag;
                 }
             }
         }
 
-
-        function modifyPersonPage()
+        function modifySubjects()
         {
-            if(url.split("?", 1)[0].endsWith("works"))
+            if (extinctionMode)
             {
-                var subjects = document.getElementsByTagName("h3");
-
-                for (var i = 0; i < subjects.length; i++)
+                var infobox_1st_map = document.getElementById("infobox").getElementsByTagName("li")[0]
+                if (infobox_1st_map.getElementsByClassName("tip")[0].innerText == "中文名: ")
                 {
-                    var fullTag = subjects[i].innerHTML;
-
-                    if (fullTag.match(/<small(([\s\S])*?)small>/g) != null)
-                    {
-                        var translatedTag = fullTag.replace(/<small(([\s\S])*?)small>/g, '');
-                        var translatedRaw = translatedTag.match(/(?<=>)[^<>]+(?=<)/g)[1];
-
-                        var originalTag = fullTag.replace(/<a(([\s\S])*?)a>/g, '');
-                        var originalRaw = originalTag.match(/(?<=>)[^<>]+(?=<)/g)[1];
-
-                        if (personPageModify)
-                        {
-                            fullTag = fullTag.replace(originalRaw, 'TBD');
-                            fullTag = fullTag.replace(translatedRaw, originalRaw);
-                            fullTag = fullTag.replace('TBD', translatedRaw);
-                        }
-                        else
-                        {
-                            fullTag = translatedTag.replace(translatedRaw, originalRaw);
-                        }
-                        document.getElementsByTagName("h3")[i].innerHTML = fullTag;
-                    }
+                    infobox_1st_map.parentElement.removeChild(infobox_1st_map)
                 }
-            }
-            else
-            {
-                if (!personPageModify)
-                {
-                    var subjectsP = document.getElementsByClassName("innerLeftItem ll");
 
-                    for (var j = 0; j < subjectsP.length; j++)
+                var sections = document.getElementsByClassName("subject_section")
+                for (var i = 0; i < sections.length; i++)
+                {
+                    var relatedSubjects = sections[i].getElementsByClassName("avatar")
+                    for (var j = 0; j < relatedSubjects.length; j++)
                     {
-                        var fullTagP = subjectsP[j].innerHTML;
-                        document.getElementsByClassName("innerLeftItem ll")[j].innerHTML = fullTagP.replace(/<small(([\s\S])*?)small>/g, '');
+                        relatedSubjects[j].removeAttribute("data-original-title")
                     }
                 }
             }
         }
-
-
-        function modifySubjectPage()
-        {
-            var infobox = document.getElementById("infobox").getElementsByTagName("li");
-
-            for (var j = 0; j < infobox.length; j++)
-            {
-                var currentBox = infobox[j].innerHTML;
-
-                if (currentBox.startsWith("<span class=\"tip\">中文名: </span>"))
-                {
-                    document.getElementById("infobox").getElementsByTagName("li")[j].innerHTML = null;
-                    break;
-                }
-            }
-        }
-
     }
 )();
