@@ -2,22 +2,19 @@
 
 ## [Bangumi 译名次要化或删除](https://github.com/2Jelly2/Make-Translated-Names-Secondary-or-Removed-on-Bangumi/blob/master/Make-Translated-Names-Secondary-or-Removed-on-Bangumi.user.js)
 
-listPageModify
+### Behavior
+##### Exchange Mode (Default)
+- Item boxes: Exchange original subject name and localized subject name, if the original one is displayed as a subtitle
+- Card boxes: Replace localized subject name with original subject name, as subtitles are not displayed
+- Subject pages: No actions, as original names are displayed as titles originally
+##### Extinction Mode
+- Item boxes: Replace localized subject name with original subject name
+- Card boxes: Replace localized subject name with original subject name
+- Subject pages:
+  - Remove localized subject name from infobox;
+  - Disable popup display of localized subject name when hover on related suject covers
 
-	= true  : 交换[收藏]页面的译名与原名位置 *默认*
-	= false : 删除[收藏]页面的译名
-	
-searchPageModify
+### Usage
+![image](https://github.com/2Jelly2/Make-Translated-Names-Secondary-or-Removed-on-Bangumi/assets/14223568/80ac7026-8046-460e-a08e-e266102bdbcf)
 
-	= true  : 交换[条目搜索结果]页面的译名与原名位置 *默认*
-	= false : 删除[条目搜索结果]页面的译名
-
-personPageModify
-
-	= true  : 交换[人物参与作品页面]中译名与原名的位置 *默认*
-	= false : 删除[人物页面]以及[人物参与作品页面]中的译名
-
-subjectPageModify
-
-	= true  : 删除[条目]页面中的译名
-	= false : 对于[条目]页面中的译名不做改动 *默认*
+Simply switch between modes by clicking toggle button on your TamperMonkey menu.
