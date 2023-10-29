@@ -4,12 +4,14 @@
 
 ### Behavior
 ##### Exchange Mode (Default)
-- Item boxes: Exchange original subject name and localized subject name, if the original one is displayed as a subtitle
 - Card boxes: Replace localized subject name with original subject name, as subtitles are not displayed
+- Item boxes: Exchange original subject name and localized subject name, if the original one displayed as subtitle
 - Subject pages: No actions, as original names are displayed as titles originally
 ##### Extinction Mode
-- Item boxes: Replace localized subject name with original subject name
 - Card boxes: Replace localized subject name with original subject name
+- Item boxes:
+  - Replace localized subject name with original subject name, if the original one displayed as subtitle;
+  - Remove subtitle
 - Subject pages:
   - Remove localized subject name from infobox;
   - Disable popup display of localized subject name when hover on related suject covers
