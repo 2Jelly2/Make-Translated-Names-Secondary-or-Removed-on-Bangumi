@@ -1,9 +1,14 @@
 // ==UserScript==
 // @name         Bangumi 译名次要化或删除
 // @namespace    https://github.com/2Jelly2/Make-Translated-Names-Secondary-or-Removed-on-Bangumi
-// @version      0.10
+// @version      0.11
+// @icon         https://bgm.tv/img/favicon.ico
 // @description  Make Translated Names Secondary or Removed on Bangumi.
 // @author       時計坂しぐれ
+// @updateURL    https://greasyfork.org/scripts/478509-bangumi-译名次要化或删除/code/Bangumi 译名次要化或删除.user.js
+// @downloadURL  https://greasyfork.org/scripts/478509-bangumi-译名次要化或删除/code/Bangumi 译名次要化或删除.user.js
+// @supportURL   https://github.com/2Jelly2/Make-Translated-Names-Secondary-or-Removed-on-Bangumi/issues
+
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @grant        GM_listValues
@@ -19,7 +24,7 @@
     {
         'use strict';
 
-        const url = window.location.href;
+        const url = location.href;
         const keys = GM_listValues();
 
         if (!keys.includes("extinctionMode"))
@@ -27,14 +32,15 @@
             GM_setValue("extinctionMode", false);
         }
 
-        // Exchange original title names and translated ones,
-        // with *false* to enable Exchange Mode. (default)
-        // Remove translated title names completely, instead of exchange them with original ones,
-        // with *true* to enable Distinction Mode;
+        // Exchange original title names and translated ones
+        // - with *false* to enable Exchange Mode. (default)
+        // Remove translated title names completely, instead of exchange them with original ones
+        // - with *true* to enable Distinction Mode;
         const extinctionMode = GM_getValue("extinctionMode");
 
-        const mode_switcher = GM_registerMenuCommand("Extinction Mode" + extinctionMode, function(event) {
-                GM_setValue("extinctionMode", !extinctionMode);
+        GM_registerMenuCommand("Extinction Mode: " + (extinctionMode ? "🟢Enabled" : "⚪Disabled"), function(event) {
+            GM_setValue("extinctionMode", !extinctionMode);
+            location.reload();
         });
 
         if (url.match(/(chii.in|bgm.tv|bangumi.tv)\/$/) != null)
