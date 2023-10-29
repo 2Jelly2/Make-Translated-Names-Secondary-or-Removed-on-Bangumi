@@ -1,12 +1,10 @@
 // ==UserScript==
 // @name         Bangumi 译名次要化或删除
 // @namespace    https://github.com/2Jelly2/Make-Translated-Names-Secondary-or-Removed-on-Bangumi
-// @version      0.11
+// @version      0.12
 // @icon         https://bgm.tv/img/favicon.ico
 // @description  Make Translated Names Secondary or Removed on Bangumi.
 // @author       時計坂しぐれ
-// @updateURL    https://greasyfork.org/scripts/478509-bangumi-译名次要化或删除/code/Bangumi 译名次要化或删除.user.js
-// @downloadURL  https://greasyfork.org/scripts/478509-bangumi-译名次要化或删除/code/Bangumi 译名次要化或删除.user.js
 // @supportURL   https://github.com/2Jelly2/Make-Translated-Names-Secondary-or-Removed-on-Bangumi/issues
 
 // @grant        GM_setValue
@@ -100,16 +98,16 @@
 
         function modifyItems()
         {
-            var subjects = document.getElementsByClassName("item")
+            var subjects = document.querySelectorAll("li.item");
 
             for (var i = 0; i < subjects.length; i++)
             {
                 var subject = subjects[i].getElementsByTagName("h3")[0];
 
-                var subtitle_element = subject.getElementsByTagName("small")[0]
+                var subtitle_element = subject.getElementsByTagName("small")[0];
                 if (subtitle_element != null)
                 {
-                    var title_element = subject.getElementsByTagName("a")[0]
+                    var title_element = subject.getElementsByTagName("a")[0];
                     var translated_name = title_element.innerText;
                     title_element.innerText = subtitle_element.innerText;
                     if (!extinctionMode)
@@ -128,19 +126,19 @@
         {
             if (extinctionMode)
             {
-                var infobox_1st_map = document.getElementById("infobox").getElementsByTagName("li")[0]
+                var infobox_1st_map = document.getElementById("infobox").getElementsByTagName("li")[0];
                 if (infobox_1st_map.getElementsByClassName("tip")[0].innerText == "中文名: ")
                 {
-                    infobox_1st_map.parentElement.removeChild(infobox_1st_map)
+                    infobox_1st_map.parentElement.removeChild(infobox_1st_map);
                 }
 
-                var sections = document.getElementsByClassName("subject_section")
+                var sections = document.getElementsByClassName("subject_section");
                 for (var i = 0; i < sections.length; i++)
                 {
-                    var relatedSubjects = sections[i].getElementsByClassName("avatar")
+                    var relatedSubjects = sections[i].getElementsByClassName("avatar");
                     for (var j = 0; j < relatedSubjects.length; j++)
                     {
-                        relatedSubjects[j].removeAttribute("data-original-title")
+                        relatedSubjects[j].removeAttribute("data-original-title");
                     }
                 }
             }
