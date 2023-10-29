@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bangumi 译名次要化或删除
 // @namespace    https://github.com/2Jelly2/Make-Translated-Names-Secondary-or-Removed-on-Bangumi
-// @version      0.12
+// @version      0.13
 // @icon         https://bgm.tv/img/favicon.ico
 // @description  Make Translated Names Secondary or Removed on Bangumi.
 // @author       時計坂しぐれ
@@ -44,6 +44,7 @@
         if (url.match(/(chii.in|bgm.tv|bangumi.tv)\/$/) != null)
         {
             modifyCards();
+            modifyHomePage();
             const observer = new MutationObserver
             (
                 function (mutations)
@@ -55,7 +56,23 @@
         }
         else if (url.match(/(chii.in|bgm.tv|bangumi.tv)\/subject\//) != null)
         {
-            modifySubjects();
+            modifySubjectPage();
+        }
+        else if (url.match(/(chii.in|bgm.tv|bangumi.tv)\/mono$/) != null)
+        {
+            modifyMonoPage();
+        }
+        else if (url.match(/(chii.in|bgm.tv|bangumi.tv)\/(person|character)\/[0-9]+/) != null)
+        {
+            if (url.match(/(chii.in|bgm.tv|bangumi.tv)\/(person|character)\/[0-9]+\/works$/) != null)
+            {
+                modifyItems();
+                modifyPersonPage();
+            }
+            else
+            {
+                modifyPersonPage();
+            }
         }
         else
         {
@@ -122,25 +139,114 @@
             }
         }
 
-        function modifySubjects()
+        function modifyPersonPage()
         {
             if (extinctionMode)
             {
-                var infobox_1st_map = document.getElementById("infobox").getElementsByTagName("li")[0];
-                if (infobox_1st_map.getElementsByClassName("tip")[0].innerText == "中文名: ")
+                removeTranslatedNameFromInfobox();
+                removeSmallTaggedElement(document.querySelectorAll("h1.nameSingle")[0]);
+
+                var subjects = document.querySelectorAll("li.item");
+                for (var i = 0; i < subjects.length; i++)
                 {
-                    infobox_1st_map.parentElement.removeChild(infobox_1st_map);
+                    removeSmallTaggedElement(subjects[i].getElementsByClassName("inner")[0]);
                 }
+            }
+        }
+
+        function modifySubjectPage()
+        {
+            if (extinctionMode)
+            {
+                removeTranslatedNameFromInfobox();
 
                 var sections = document.getElementsByClassName("subject_section");
-                for (var i = 0; i < sections.length; i++)
+                for (let i = 0; i < sections.length; i++)
                 {
-                    var relatedSubjects = sections[i].getElementsByClassName("avatar");
-                    for (var j = 0; j < relatedSubjects.length; j++)
+                    removePopupAttributes(sections[i].getElementsByClassName("avatar"));
+                }
+
+                var character_boxes = document.getElementsByClassName("user");
+                for (let i = 0; i < character_boxes.length; i++)
+                {
+                    var character = character_boxes[i].getElementsByClassName("tip_j")[0];
+                    character.removeChild(character.getElementsByClassName("tip")[0]);
+                    character.removeChild(character.getElementsByTagName("br")[0]);
+                }
+            }
+        }
+
+        function modifyHomePage()
+        {
+            if (extinctionMode)
+            {
+                var ep_popups = document.getElementsByClassName("prg_popup")
+                for (let i = 0; i < ep_popups.length; i++)
+                {
+                    var popup = ep_popups[i].getElementsByClassName("tip")[0];
+                    if (popup.innerText.startsWith("中文标题:"))
                     {
-                        relatedSubjects[j].removeAttribute("data-original-title");
+                        var translated_text = popup.innerHTML.split("<br>", 1)[0];
+                        popup.innerHTML = popup.innerHTML.replace(translated_text + "<br>", "");
                     }
                 }
+
+                var cover_lists = document.getElementsByClassName("coverList");
+                for (let i = 0; i < cover_lists.length; i++)
+                {
+                    var covers = cover_lists[i].getElementsByClassName("thumbTip");
+                    for (let j = 0; j < covers.length; j++)
+                    {
+                        var text = covers[j].getAttribute("data-original-title").split("<br /><small>", 1)[0];
+                        covers[j].setAttribute("data-original-title", text);
+                    }
+                }
+
+                var watching_subject_titles = document.getElementsByClassName("headerInner");
+                for (let i = 0; i < watching_subject_titles.length; i++)
+                {
+                    removePopupAttributes(watching_subject_titles[i].getElementsByClassName("textTip"));
+                }
+
+                removePopupAttributes(document.querySelectorAll("a.subjectItem.title.textTip"));
+            }
+        }
+
+        function modifyMonoPage()
+        {
+                var cover_lists = document.getElementsByClassName("coversSmall");
+                for (let i = 0; i < cover_lists.length; i++)
+                {
+                    var entities = cover_lists[i].getElementsByTagName("li");
+                    for (let j = 0; j < entities.length; j++)
+                    {
+                        removeSmallTaggedElement(entities[j].getElementsByClassName("info")[0]);
+                    }
+                }
+        }
+
+        function removeTranslatedNameFromInfobox()
+        {
+            var infobox_1st_map = document.getElementById("infobox").getElementsByTagName("li")[0];
+            if (infobox_1st_map.getElementsByClassName("tip")[0].innerText.endsWith("中文名: "))
+            {
+                infobox_1st_map.parentElement.removeChild(infobox_1st_map);
+            }
+        }
+
+        function removeSmallTaggedElement(outerElement)
+        {
+            if (outerElement.getElementsByTagName("small").length > 0)
+            {
+                outerElement.removeChild(outerElement.getElementsByTagName("small")[0]);
+            }
+        }
+
+        function removePopupAttributes(elementCollection)
+        {
+            for (var i = 0; i < elementCollection.length; i++)
+            {
+                elementCollection[i].removeAttribute("data-original-title");
             }
         }
     }
