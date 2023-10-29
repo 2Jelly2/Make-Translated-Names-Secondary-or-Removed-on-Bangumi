@@ -4,18 +4,18 @@
 
 ### Behavior
 ##### Exchange Mode (Default)
-- Card boxes: Replace localized subject name with original subject name, as subtitles are not displayed
-- Item boxes: Exchange original subject name and localized subject name, if the original one displayed as subtitle
-- Subject pages: No actions, as original names are displayed as titles originally 
+- Card boxes: Replace localized subject name with original subject name, as subtitles are not displayed;
+- Item boxes: Exchange original subject name and localized subject name, if the original one displayed as subtitle;
+- Subject pages: No actions, as original names are displayed as titles originally.
 
 ##### Extinction Mode
-- Card boxes: Replace localized subject name with original subject name
+- Card boxes: Replace localized subject name with original subject name;
 - Item boxes:
   - Replace localized subject name with original subject name, if the original one displayed as subtitle;
-  - Remove subtitle
+  - Remove subtitle;
 - Subject pages:
   - Remove localized subject name from infobox;
-  - Disable popup display of localized subject name when hover on related suject covers
+  - Disable popup display of localized subject name when hover on related suject covers.
 
 ### Usage
 ![image](https://github.com/2Jelly2/Make-Translated-Names-Secondary-or-Removed-on-Bangumi/assets/14223568/80ac7026-8046-460e-a08e-e266102bdbcf)
