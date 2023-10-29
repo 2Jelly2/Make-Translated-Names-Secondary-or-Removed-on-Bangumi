@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bangumi 译名次要化或删除
 // @namespace    https://github.com/2Jelly2/Make-Translated-Names-Secondary-or-Removed-on-Bangumi
-// @version      0.13
+// @version      0.14
 // @icon         https://bgm.tv/img/favicon.ico
 // @description  Make Translated Names Secondary or Removed on Bangumi.
 // @author       時計坂しぐれ
@@ -41,7 +41,7 @@
             location.reload();
         });
 
-        if (url.match(/(chii.in|bgm.tv|bangumi.tv)\/$/) != null)
+        if (url.match(/(chii.in|bgm.tv|bangumi.tv)\/(timeline)?$/) != null)
         {
             modifyCards();
             modifyHomePage();
@@ -159,6 +159,7 @@
             if (extinctionMode)
             {
                 removeTranslatedNameFromInfobox();
+                removeTranslatedNameFromEpisodePopup();
 
                 var sections = document.getElementsByClassName("subject_section");
                 for (let i = 0; i < sections.length; i++)
@@ -180,16 +181,7 @@
         {
             if (extinctionMode)
             {
-                var ep_popups = document.getElementsByClassName("prg_popup")
-                for (let i = 0; i < ep_popups.length; i++)
-                {
-                    var popup = ep_popups[i].getElementsByClassName("tip")[0];
-                    if (popup.innerText.startsWith("中文标题:"))
-                    {
-                        var translated_text = popup.innerHTML.split("<br>", 1)[0];
-                        popup.innerHTML = popup.innerHTML.replace(translated_text + "<br>", "");
-                    }
-                }
+                removeTranslatedNameFromEpisodePopup();
 
                 var cover_lists = document.getElementsByClassName("coverList");
                 for (let i = 0; i < cover_lists.length; i++)
@@ -223,6 +215,20 @@
                         removeSmallTaggedElement(entities[j].getElementsByClassName("info")[0]);
                     }
                 }
+        }
+
+        function removeTranslatedNameFromEpisodePopup()
+        {
+            var ep_popups = document.getElementsByClassName("prg_popup")
+            for (let i = 0; i < ep_popups.length; i++)
+            {
+                var popup = ep_popups[i].getElementsByClassName("tip")[0];
+                if (popup.innerText.startsWith("中文标题:"))
+                {
+                    var translated_text = popup.innerHTML.split("<br>", 1)[0];
+                    popup.innerHTML = popup.innerHTML.replace(translated_text + "<br>", "");
+                }
+            }
         }
 
         function removeTranslatedNameFromInfobox()
