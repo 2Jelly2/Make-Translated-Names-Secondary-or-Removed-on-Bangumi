@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bangumi 译名次要化或删除
 // @namespace    https://github.com/2Jelly2/Make-Translated-Names-Secondary-or-Removed-on-Bangumi
-// @version      0.14
+// @version      0.15
 // @icon         https://bgm.tv/img/favicon.ico
 // @description  Make Translated Names Secondary or Removed on Bangumi.
 // @author       時計坂しぐれ
@@ -41,7 +41,7 @@
             location.reload();
         });
 
-        if (url.match(/(chii.in|bgm.tv|bangumi.tv)\/(timeline)?$/) != null)
+        if (url.match(/(chii.in|bgm.tv|bangumi.tv)*(\/|\/timeline)$/) != null)
         {
             modifyCards();
             modifyHomePage();
@@ -88,25 +88,19 @@
             {
                 var card = cards[i];
                 var info = card.parentElement.getElementsByTagName("a")[1];
+                var subtitle = card.getElementsByClassName("subtitle")[0];
 
                 if (card.getAttribute("ignore") == null)
                 {
-                    var title = document.getElementsByClassName("card")[i].getElementsByClassName("title")[0].getElementsByTagName("a")[0];
+                    var title = card.getElementsByClassName("title")[0].getElementsByTagName("a")[0];
 
                     if (info.getAttribute("data-subject-name") != null)
                     {
                         title.innerText = info.getAttribute("data-subject-name");
                     }
-                    else
+                    else if(subtitle.innerText != "")
                     {
-                        if (card.classList.contains("card_tiny"))
-                        {
-                            title.innerText = card.getElementsByClassName("subtitle")[0].innerText;
-                        }
-                        else
-                        {
-                            title.innerText = info.innerText;
-                        }
+                        title.innerText = subtitle.innerText;
                     }
                     card.setAttribute("ignore", true);
                 }
