@@ -199,6 +199,8 @@
 
         function modifyMonoPage()
         {
+            if (extinctionMode)
+            {
                 var cover_lists = document.getElementsByClassName("coversSmall");
                 for (let i = 0; i < cover_lists.length; i++)
                 {
@@ -208,6 +210,7 @@
                         removeSmallTaggedElement(entities[j].getElementsByClassName("info")[0]);
                     }
                 }
+            }
         }
 
         function removeTranslatedNameFromEpisodePopup()
@@ -235,9 +238,10 @@
 
         function removeSmallTaggedElement(outerElement)
         {
-            if (outerElement.getElementsByTagName("small").length > 0)
+            var elementsTaggedWithSmall = outerElement.getElementsByTagName("small");
+            if (elementsTaggedWithSmall.length > 0)
             {
-                outerElement.removeChild(outerElement.getElementsByTagName("small")[0]);
+                outerElement.removeChild(elementsTaggedWithSmall[0]);
             }
         }
 
