@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bangumi 译名次要化或删除
 // @namespace    https://github.com/2Jelly2/Make-Translated-Names-Secondary-or-Removed-on-Bangumi
-// @version      0.15
+// @version      0.16
 // @icon         https://bgm.tv/img/favicon.ico
 // @description  Make Translated Names Secondary or Removed on Bangumi.
 // @author       時計坂しぐれ
@@ -43,16 +43,8 @@
 
         if (url.match(/(chii.in|bgm.tv|bangumi.tv)*(\/|\/timeline)$/) != null)
         {
-            modifyCards();
             modifyHomePage();
-            const observer = new MutationObserver
-            (
-                function (mutations)
-                {
-                    modifyCards();
-                }
-            );
-            observer.observe(document.body, { childList: true, subtree: true });
+            monitorTo(modifyCards);
         }
         else if (url.match(/(chii.in|bgm.tv|bangumi.tv)\/subject\//) != null)
         {
@@ -64,7 +56,7 @@
         }
         else if (url.match(/(chii.in|bgm.tv|bangumi.tv)\/(person|character)\/[0-9]+/) != null)
         {
-            if (url.match(/(chii.in|bgm.tv|bangumi.tv)\/(person|character)\/[0-9]+\/works$/) != null)
+            if (url.match(/(chii.in|bgm.tv|bangumi.tv)\/(person|character)\/[0-9]+\/works(\?.*)?$/) != null)
             {
                 modifyItems();
                 modifyPersonPage();
@@ -77,6 +69,13 @@
         else
         {
             modifyItems();
+        }
+
+        function monitorTo(func)
+        {
+            func();
+            const observer = new MutationObserver(function (mutations){func();});
+            observer.observe(document.body, { childList: true, subtree: true });
         }
 
 
@@ -200,6 +199,8 @@
 
         function modifyMonoPage()
         {
+            if (extinctionMode)
+            {
                 var cover_lists = document.getElementsByClassName("coversSmall");
                 for (let i = 0; i < cover_lists.length; i++)
                 {
@@ -209,6 +210,7 @@
                         removeSmallTaggedElement(entities[j].getElementsByClassName("info")[0]);
                     }
                 }
+            }
         }
 
         function removeTranslatedNameFromEpisodePopup()
@@ -236,9 +238,10 @@
 
         function removeSmallTaggedElement(outerElement)
         {
-            if (outerElement.getElementsByTagName("small").length > 0)
+            var elementsTaggedWithSmall = outerElement.getElementsByTagName("small");
+            if (elementsTaggedWithSmall.length > 0)
             {
-                outerElement.removeChild(outerElement.getElementsByTagName("small")[0]);
+                outerElement.removeChild(elementsTaggedWithSmall[0]);
             }
         }
 
